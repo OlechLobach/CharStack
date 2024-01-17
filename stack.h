@@ -6,14 +6,21 @@
 using namespace std;
 
 
+
 class CharStack {
 private:
-    static const int maxStackSize = 100;  
-    char stack[maxStackSize];
-    int top;  
+    char* stack;   
+    int maxStackSize; 
+    int top; 
 
 public:
-    CharStack() : top(-1) {}  
+    CharStack(int size = 10) : maxStackSize(size), top(-1) {
+        stack = new char[maxStackSize];
+    }
+
+    ~CharStack() {
+        delete[] stack;
+    }
 
     bool IsEmpty() const {
         return top == -1;
@@ -24,13 +31,11 @@ public:
     }
 
     void Push(char value) {
-        if (!IsFull()) {
-            stack[++top] = value;
-            cout << "Pushed: " << value << endl;
+        if (IsFull()) {
+            ResizeStack();
         }
-        else {
-            cout << "Error: Stack is full. Cannot push." << endl;
-        }
+        stack[++top] = value;
+        cout << "Pushed: " << value << endl;
     }
 
     void Pop() {
@@ -59,6 +64,23 @@ public:
         else {
             cout << "Error: Stack is empty. Cannot peek." << endl;
         }
+    }
+
+private:
+    void ResizeStack() {
+        int newMaxSize = maxStackSize * 2;  
+        char* newStack = new char[newMaxSize];
+
+       
+        for (int i = 0; i <= top; ++i) {
+            newStack[i] = stack[i];
+        }
+
+        delete[] stack;
+        stack = newStack;
+        maxStackSize = newMaxSize;
+
+        cout << "Stack resized. New size: " << maxStackSize << endl;
     }
 };
 #endif
